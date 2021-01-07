@@ -24,6 +24,7 @@ const io = socketio(server, {
     methods: ["GET", "POST"]
   }
 });
+const sockets = {};
 
 // connect db
 mongoose
@@ -34,6 +35,10 @@ mongoose
   .catch(err => console.log(err));
 
 io.on("connect", socket => {
+  console.log("Connected socket id: ", socket.id);
+  let userID = socket.handshake.query.id;
+  sockets[userID] = socket;
+
   // create-game
   socket.on("create-game", (nickName, maxPlayer, maxWolf, name) => {
     createGameService(io, socket, nickName, maxPlayer, maxWolf, name);
@@ -56,7 +61,7 @@ io.on("connect", socket => {
   });
 
   socket.on("start-game", async ({ gameID }) => {
-    startGameService(io, socket, gameID);
+    startGameService(io, socket, gameID, sockets);
   });
 });
 

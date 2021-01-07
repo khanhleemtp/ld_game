@@ -23,10 +23,18 @@ export function SocketProvider({ children }) {
     // distribution random card
     // socket.emit('timer', {playerID : userInfo._id, gameID: gameState._id });
     socket.emit("start-game", { gameID: gameState._id });
+
+    socket.on("demo-abcd", () => {
+      console.log("Ahihi do ngoc");
+    });
   };
 
   useEffect(() => {
-    const newSocket = io("http://localhost:4000");
+    const newSocket = io("http://localhost:4000", {
+      query: {
+        id: nickName
+      }
+    });
     setSocket(newSocket);
     newSocket.on("updateGame", game => {
       console.log("Change game state", game);
@@ -35,7 +43,7 @@ export function SocketProvider({ children }) {
       setIsStart(game.players.length === 2);
     });
     return () => {
-      newSocket.removeAllListeners();
+      newSocket.close();
     };
   }, []);
 
