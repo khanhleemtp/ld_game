@@ -3,12 +3,21 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { GlobalStyles } from './globalStyles'
+import { Provider } from 'react-redux';
+import ApiService from './services/api.service';
+import store from './redux/store';
+import { SocketProvider } from './context/SocketProvider';
+import { TokenService } from './services/storage.service';
+ApiService.init();
 
 ReactDOM.render(
-  <>
+  <Provider store={store}>
     <GlobalStyles />
-    <App />
-  </>,
+    <SocketProvider>
+      <App />
+    </SocketProvider>
+  </Provider>
+  ,
   document.getElementById('root')
 );
 

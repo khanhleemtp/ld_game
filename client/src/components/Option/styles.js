@@ -5,6 +5,7 @@ export const OptionWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     max-width: 54px;
+    cursor: pointer;
     `
 
 export const OptionText = styled.div`

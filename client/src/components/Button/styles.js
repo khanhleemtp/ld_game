@@ -14,12 +14,11 @@ export const ButtonWrapper = styled.button`
     line-height: 1;
     outline: none;
     cursor: pointer;
-    margin: 0 4px 12px 4px;
     &:hover{
         filter: brightness(95%);
     }
     @media (min-width: 640px) {
-        width: 186px;
+        width: 212px;
     }
 `
 

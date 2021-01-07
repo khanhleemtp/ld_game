@@ -1,8 +1,7 @@
 import React from 'react'
-import { AiOutlineInfoCircle } from 'react-icons/ai'
 import { IconContext } from 'react-icons'
 import { OptionText, OptionWrapper } from './styles'
-export default function Option({ text, size, color, icon }) {
+export default function Option({ text, size, color, icon, onClick }) {
     return (
         <IconContext.Provider
             value={{
@@ -10,7 +9,9 @@ export default function Option({ text, size, color, icon }) {
                 size: size,
             }}
         >   
-            <OptionWrapper>
+            <OptionWrapper
+                onClick={onClick}
+            >
                 {icon}
                 <OptionText>
                     {text}

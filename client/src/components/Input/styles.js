@@ -8,12 +8,18 @@ export const InputWrapper = styled.div`
     align-items: center;
     justify-content: center;
     font-size: 14px;
+    @media (min-width: 640px) {
+        font-size: 16px;
+    }
 `
 
 export const InputLabel = styled.div`
     width: 100%;
     text-transform: uppercase;
     font-size: 16px;
+    @media (min-width: 640px) {
+        font-size: 20px;
+    }
 `
 
 export const InputText = styled.input`
@@ -31,5 +37,14 @@ export const InputText = styled.input`
         &::placeholder{
             color: #171717;
         }
+    }
+    @media (min-width: 640px) {
+        font-size: 20px;
+        padding: 8px 0 8px;
+        &::placeholder {
+        color: #777b92;
+        font-weight: 600;
+        font-size: 18px;
+    }
     }
 `
