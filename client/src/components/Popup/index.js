@@ -25,15 +25,18 @@ export default function Popup({ isOpenPopup, setIsOpenPopup, login }) {
 
     const [maxPlayer, setMaxPlayer] = useState(8);
     const [maxWolf, setMaxWolf] = useState(2);
-    const [name, setName] = useState();
+    const [name, setName] = useState('');
     const onPlayerChange = e => setMaxPlayer(e.target.value);
     const onNameChange = e => setName(e.target.value);
     const onWolfChange = e => setMaxWolf(e.target.value);
 
     const nickName = TokenService.getToken('ldname');
-    
+
     const onCreateGame = (e) => {
         e.preventDefault();
+        if(!name) {
+            return alert("Tên phòng không để trống!")
+        }
         TokenService.saveToken(name, 'room_name');
         
         socket.emit('create-game', nickName, maxPlayer, maxWolf, name);
@@ -77,11 +80,12 @@ export default function Popup({ isOpenPopup, setIsOpenPopup, login }) {
                 </PopupTitle>
                 {
                     login ? null : 
-                <SelectWrapper>
+                <SelectWrapper onSubmit={onCreateGame}>
                     <div>Tên phòng</div>
                     <input 
                         onChange={onNameChange}
                         value={name}
+                        autoFocus 
                     />
                     <div>Chọn số người: </div>
                     <select

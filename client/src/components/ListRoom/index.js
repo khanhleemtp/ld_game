@@ -27,7 +27,7 @@ export const ListRoomElement = () => {
         console.log("Join to room", room)
         TokenService.saveToken(room.name, 'room_name');
         socket.emit('join-game', { gameID: room._id, nickName });
-        socket.on("join-game", function(data){
+        socket.once("join-game", function(data){
             console.log("On Join game", data)
             if(data.success) history.push(`/room/${room._id}`)
             else alert(data.message)

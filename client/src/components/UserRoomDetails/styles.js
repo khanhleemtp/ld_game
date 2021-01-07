@@ -16,7 +16,7 @@ export const UserContainer = styled.div`
 export const UserWrapper = styled.div`
     height: 520px;
     width: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
     margin: 12px;
 `
 
