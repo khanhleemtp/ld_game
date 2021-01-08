@@ -39,6 +39,12 @@ io.on("connect", socket => {
   let userID = socket.handshake.query.id;
   sockets[userID] = socket;
 
+  let listNickName = Object.keys(sockets);
+  let listSocketId = listNickName.map(nickName => {
+    return { socketID: sockets[nickName].id, nickName: nickName };
+  });
+  console.log(listSocketId);
+
   // create-game
   socket.on("create-game", (nickName, maxPlayer, maxWolf, name) => {
     createGameService(io, socket, nickName, maxPlayer, maxWolf, name);

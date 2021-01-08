@@ -13,8 +13,7 @@ export function SocketProvider({ children }) {
   const nickName = TokenService.getToken("ldname");
 
   const userInfo = gameState && gameState.players.filter(player => player.nickName === nickName)[0];
-  console.log("userInfo: ", userInfo);
-
+  // console.log("userInfo: ", userInfo);
   const [socket, setSocket] = useState();
   const [isStart, setIsStart] = useState(false);
 
@@ -23,10 +22,6 @@ export function SocketProvider({ children }) {
     // distribution random card
     // socket.emit('timer', {playerID : userInfo._id, gameID: gameState._id });
     socket.emit("start-game", { gameID: gameState._id });
-
-    socket.on("demo-abcd", () => {
-      console.log("Ahihi do ngoc");
-    });
   };
 
   useEffect(() => {
@@ -35,13 +30,20 @@ export function SocketProvider({ children }) {
         id: nickName
       }
     });
+
     setSocket(newSocket);
+
     newSocket.on("updateGame", game => {
-      console.log("Change game state", game);
+      console.log("Update game state");
       setGameState(game);
       // setIsStart(game.players.length === game.maxPlayer)
       setIsStart(game.players.length === 2);
     });
+
+    newSocket.on("demo-abcd", () => {
+      console.log("Ahihi do ngoc");
+    });
+
     return () => {
       newSocket.close();
     };

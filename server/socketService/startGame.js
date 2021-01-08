@@ -6,10 +6,14 @@ const startGameService = async (io, socket, gameID, sockets) => {
 
   game.isOpen = false;
   game = await game.save();
+  console.log(game);
 
-  let firstPlayer = game.players[0];
-  console.log(firstPlayer);
-  sockets[firstPlayer.nickName].emit("demo-abcd");
+  for (let i = 0; i < game.players.length; i++) {
+    const player = game.players[i];
+    console.log(player);
+    sockets[player.nickName].emit("demo-abcd");
+  }
+
   io.to(gameID).emit("updateGame", game);
 };
 
