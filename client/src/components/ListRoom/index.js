@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
   ListRoomContainer,
@@ -35,7 +34,6 @@ export const ListRoomElement = () => {
     TokenService.saveToken(room.name, "room_name");
     socket.emit("join-game", { gameID: room._id, nickName });
     socket.once("join-game", function (data) {
-      console.log("On Join game", data);
       if (data.success) history.push(`/room/${room._id}`);
       else alert(data.message);
     });

@@ -20,7 +20,7 @@ import { useHistory } from "react-router-dom";
 
 export default function Popup({ isOpenPopup, setIsOpenPopup, login }) {
   const value = useSocket();
-  const { socket, gameState } = value;
+  const { socket, gameState, onCreateGame } = value;
   const history = useHistory();
   useEffect(() => {
     if (gameState._id !== "") history.push(`/room/${gameState._id}`);
@@ -34,15 +34,16 @@ export default function Popup({ isOpenPopup, setIsOpenPopup, login }) {
   const onWolfChange = e => setMaxWolf(e.target.value);
 
   const nickName = TokenService.getToken("ldname");
-
-  const onCreateGame = e => {
+  console.log(onCreateGame);
+  const onCreateSubmitGame = e => {
     e.preventDefault();
-    if (!name) {
-      return alert("Tên phòng không để trống!");
-    }
-    TokenService.saveToken(name, "room_name");
+    onCreateGame(name, maxPlayer, maxWolf);
+    // if (!name) {
+    //   return alert("Tên phòng không để trống!");
+    // }
+    // TokenService.saveToken(name, "room_name");
 
-    socket.emit("create-game", nickName, maxPlayer, maxWolf, name);
+    // socket.emit("create-game", nickName, maxPlayer, maxWolf, name);
   };
 
   const closePopup = () => {
@@ -70,7 +71,7 @@ export default function Popup({ isOpenPopup, setIsOpenPopup, login }) {
 
         <PopupTitle>{login ? `Để đăng nhập, chọn một tài khoản bên dưới: ` : `Cài đặt phòng chơi: `}</PopupTitle>
         {login ? null : (
-          <SelectWrapper onSubmit={onCreateGame}>
+          <SelectWrapper onSubmit={onCreateSubmitGame}>
             <div>Tên phòng</div>
             <input onChange={onNameChange} value={name} autoFocus />
             <div>Chọn số người: </div>
@@ -102,7 +103,7 @@ export default function Popup({ isOpenPopup, setIsOpenPopup, login }) {
               bgColor="#ca1f56"
               color="#fff"
               size="24px"
-              onClick={onCreateGame}
+              onClick={onCreateSubmitGame}
               type="text"
             />
           )}

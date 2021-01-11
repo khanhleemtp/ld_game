@@ -7,7 +7,6 @@ import { Provider } from 'react-redux';
 import ApiService from './services/api.service';
 import store from './redux/store';
 import { SocketProvider } from './context/SocketProvider';
-import { TokenService } from './services/storage.service';
 ApiService.init();
 
 ReactDOM.render(

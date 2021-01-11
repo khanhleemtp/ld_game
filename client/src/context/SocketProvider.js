@@ -15,10 +15,34 @@ export function SocketProvider({ children }) {
 
   const nickName = TokenService.getToken("ldname");
   const userInfo = gameState && gameState.players.filter(player => player.nickName === nickName)[0];
-  console.log("userInfo", userInfo, "\n", "gameState: ", gameState);
+
+  const onCreateGame = (name, maxPlayer, maxWolf, nickName = TokenService.getToken("ldname")) => {
+    if (!name) {
+      return alert("Tên phòng không để trống!");
+    }
+    TokenService.saveToken(name, "room_name");
+    socket.emit("create-game", nickName, maxPlayer, maxWolf, name);
+  };
+
+  const joinRoom = (room, history) => {
+    TokenService.saveToken(room.name, "room_name");
+    socket.emit("join-game", { gameID: room._id, nickName });
+    socket.once("join-game", data => {
+      if (data.success) history.push(`/room/${room._id}`);
+      else alert(data.message);
+    });
+  };
+
+  const leftRoom = history => {
+    socket.emit("left-game", nickName, gameState._id);
+    setGameState(prev => {
+      return { ...prev, _id: "", players: gameState.players.filter(player => player.nickName !== nickName) };
+    });
+    TokenService.removeToken("room_name");
+    history.push("/");
+  };
 
   const startDayGame = () => {
-    console.log("start day game");
     // distribution random card
     // socket.emit('timer', {playerID : userInfo._id, gameID: gameState._id });
     socket.emit("start-game", { gameID: gameState._id });
@@ -35,7 +59,6 @@ export function SocketProvider({ children }) {
     setSocket(newSocket);
 
     newSocket.on("updateGame", game => {
-      // console.log("Game: ", game);
       setGameState(prev => ({ ...prev, ...game }));
       setIsStart(game.players.length === game.maxPlayer);
       // hàm này chỉ chạy 1 lần trc khi render ra view, khi nhận đc sk updateGame thì nó mới bắt đầu setGameState
@@ -52,7 +75,7 @@ export function SocketProvider({ children }) {
     };
   }, []);
 
-  const value = { socket, gameState, setGameState, userInfo, isStart, startDayGame };
+  const value = { socket, gameState, setGameState, userInfo, isStart, startDayGame, onCreateGame, joinRoom, leftRoom };
 
   return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>;
 }
