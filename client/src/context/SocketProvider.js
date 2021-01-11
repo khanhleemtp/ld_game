@@ -35,6 +35,7 @@ export function SocketProvider({ children }) {
 
   const leftRoom = history => {
     socket.emit("left-game", nickName, gameState._id);
+    console.log("state change");
     setGameState(prev => {
       return { ...prev, _id: "", players: gameState.players.filter(player => player.nickName !== nickName) };
     });
@@ -45,9 +46,11 @@ export function SocketProvider({ children }) {
   const startDayGame = () => {
     // distribution random card
     // socket.emit('timer', {playerID : userInfo._id, gameID: gameState._id });
+    console.log("Click");
     socket.emit("start-game", { gameID: gameState._id });
   };
-
+  console.log("UserInfo: ", userInfo);
+  console.log("GameState: ", gameState);
   useEffect(() => {
     // effect
     const newSocket = io("http://localhost:4000", {
@@ -66,7 +69,7 @@ export function SocketProvider({ children }) {
     });
 
     newSocket.on("updateRole", playerData => {
-      console.log("Ahihi do ngoc", playerData, userInfo, gameState);
+      console.log("Ahihi do ngoc", playerData);
     });
 
     // unmount

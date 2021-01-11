@@ -34,7 +34,6 @@ export default function Popup({ isOpenPopup, setIsOpenPopup, login }) {
   const onWolfChange = e => setMaxWolf(e.target.value);
 
   const nickName = TokenService.getToken("ldname");
-  console.log(onCreateGame);
   const onCreateSubmitGame = e => {
     e.preventDefault();
     onCreateGame(name, maxPlayer, maxWolf);
