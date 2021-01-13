@@ -12,9 +12,10 @@ const startGameService = async (io, socket, gameID, sockets) => {
     sockets[player.nickName].emit("updateRole", player);
   }
 
-  console.log(game);
   game = await game.save();
   io.to(gameID).emit("updateGame", game);
+
+  startGameForRoom(sockets, game);
 };
 
 const generateRoleForListPlayer = game => {
@@ -22,8 +23,8 @@ const generateRoleForListPlayer = game => {
   let listRole = {
     wolf: "wolf",
     seer: "seer",
-    villager: "villager",
-    guard: "guard"
+    guard: "guard",
+    villager: "villager"
   };
 
   // Find wolf
@@ -59,6 +60,52 @@ const generateRoleForSinglePlayer = (players, maxPlayer, listRole, role) => {
   }
 
   return players;
+};
+
+// Start game for Room
+
+const startGameForRoom = async (sockets, game) => {
+  let listTimerByRole = {
+    wolf: {
+      time: 3 // 3s
+    },
+    seer: {
+      time: 3
+    },
+    guard: {
+      time: 3
+    },
+    villager: {
+      time: 5
+    }
+  };
+
+  let index = 0;
+  let listRole = Object.keys(listTimerByRole);
+
+  while (true) {
+    let timeObject = listTimerByRole[listRole[index]];
+    console.log("Send to ", listRole[index], timeObject);
+    for (let i = 0; i < game.players.length; i++) {
+      const player = game.players[i];
+      let payload = {
+        role: listRole[index],
+        time: timeObject.time
+      };
+      sockets[player.nickName].emit("play-with-role", payload);
+    }
+
+    await waittingByPromise(timeObject.time);
+    index++;
+    index = index % listRole.length;
+  }
+};
+
+const waittingByPromise = timeout => {
+  // timeout = second
+  return new Promise((resolve, reject) => {
+    setTimeout(() => resolve(), timeout * 1000);
+  });
 };
 
 module.exports = startGameService;

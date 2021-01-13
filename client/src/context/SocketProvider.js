@@ -13,7 +13,7 @@ export function SocketProvider({ children }) {
   const [gameState, setGameState] = useState({ _id: "", isOpen: false, players: [], maxPlayer: 4, maxWolf: 1 });
   const [socket, setSocket] = useState();
   const [isStart, setIsStart] = useState(false);
-
+  const [timeRole, setTimeRole] = useState({ role: "", time: 0 });
   const nickName = TokenService.getToken("ldname");
   const userInfo = gameState && gameState.players.filter(player => player.nickName === nickName)[0];
 
@@ -77,13 +77,29 @@ export function SocketProvider({ children }) {
       console.log("Update Role", playerData);
     });
 
+    newSocket.on("play-with-role", payload => {
+      console.log("Play session: ", payload);
+      setTimeRole(time => ({ ...time, ...payload }));
+    });
+
     // unmount
     return () => {
       newSocket.close();
     };
   }, []);
 
-  const value = { socket, gameState, setGameState, userInfo, isStart, startDayGame, onCreateGame, joinRoom, leftRoom };
+  const value = {
+    socket,
+    gameState,
+    setGameState,
+    userInfo,
+    isStart,
+    startDayGame,
+    onCreateGame,
+    joinRoom,
+    leftRoom,
+    timeRole
+  };
 
   return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>;
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SocialBtn from "../SocialBtn";
 import {
   DayRoomContainer,
@@ -19,11 +19,11 @@ import { Button } from "../Button";
 import { TokenService } from "../../services/storage.service";
 import { useSocket } from "../../context/SocketProvider";
 import Role from "../Role";
+import CountDown from "../CountDown";
 
 const DayRoom = () => {
-  const { socket, gameState, setGameState, userInfo, isStart, startDayGame, leftRoom } = useSocket();
+  const { socket, gameState, setGameState, userInfo, isStart, startDayGame, leftRoom, timeRole } = useSocket();
   const { players, maxPlayer, maxWolf } = gameState;
-
   const history = useHistory();
   const nickName = TokenService.getToken("ldname");
   // const leftRoom = () => {
@@ -96,7 +96,7 @@ const DayRoom = () => {
             height="24px"
             margin="0 12px"
           />
-          Time: 2:00
+          <CountDown />
         </DayRoomTimmer>
 
         <div>
