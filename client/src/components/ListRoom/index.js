@@ -27,17 +27,17 @@ export const ListRoomElement = () => {
     history.push("/");
   };
   const room = useSelector(state => state.room);
-  const { socket } = useSocket();
+  const { socket, joinRoom } = useSocket();
   const nickName = TokenService.getToken("ldname");
-  const joinRoom = room => {
-    console.log("Join to room", room._id);
-    TokenService.saveToken(room.name, "room_name");
-    socket.emit("join-game", { gameID: room._id, nickName });
-    socket.once("join-game", function (data) {
-      if (data.success) history.push(`/room/${room._id}`);
-      else alert(data.message);
-    });
-  };
+  // const joinRoom = room => {
+  //   console.log("Join to room", room._id);
+  //   TokenService.saveToken(room.name, "room_name");
+  //   socket.emit("join-game", { gameID: room._id, nickName });
+  //   socket.once("join-game", function (data) {
+  //     if (data.success) history.push(`/room/${room._id}`);
+  //     else alert(data.message);
+  //   });
+  // };
 
   return (
     <div style={{ maxWidth: "1280px", margin: "0 auto", width: "100%" }}>
@@ -56,7 +56,7 @@ export const ListRoomElement = () => {
             {room && room.rooms ? (
               <>
                 {room.rooms.map(room => (
-                  <RoomElementContainer key={room._id} onClick={() => joinRoom(room)}>
+                  <RoomElementContainer key={room._id} onClick={() => joinRoom(room, history)}>
                     <RoomElementName>{room.name}</RoomElementName>
                     <RoomElementAmount>
                       {room.players && room.players.length ? room.players.length : 0}/{room.maxPlayer}

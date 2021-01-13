@@ -3,6 +3,7 @@ import io from "socket.io-client";
 import { TokenService } from "../services/storage.service";
 
 const SocketContext = React.createContext();
+let isFirstShowInfo = true;
 
 export function useSocket() {
   return useContext(SocketContext);
@@ -46,11 +47,15 @@ export function SocketProvider({ children }) {
   const startDayGame = () => {
     // distribution random card
     // socket.emit('timer', {playerID : userInfo._id, gameID: gameState._id });
-    console.log("Click");
     socket.emit("start-game", { gameID: gameState._id });
   };
-  console.log("UserInfo: ", userInfo);
-  console.log("GameState: ", gameState);
+
+  if (isFirstShowInfo && userInfo && gameState) {
+    isFirstShowInfo = false;
+    console.log("UserInfo: ", userInfo);
+    console.log("GameState: ", gameState);
+  }
+
   useEffect(() => {
     // effect
     const newSocket = io("http://localhost:4000", {
@@ -69,7 +74,7 @@ export function SocketProvider({ children }) {
     });
 
     newSocket.on("updateRole", playerData => {
-      console.log("Ahihi do ngoc", playerData);
+      console.log("Update Role", playerData);
     });
 
     // unmount
