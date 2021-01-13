@@ -18,7 +18,7 @@ import { AiOutlineClose, AiOutlineClockCircle } from "react-icons/ai";
 import { Button } from "../Button";
 import { TokenService } from "../../services/storage.service";
 import { useSocket } from "../../context/SocketProvider";
-import CountDown from "../Countdown/Countdown";
+import Role from "../Role";
 
 const DayRoom = () => {
   const { socket, gameState, setGameState, userInfo, isStart, startDayGame, leftRoom } = useSocket();
@@ -61,22 +61,17 @@ const DayRoom = () => {
             <DayRoomRoleImmg src="/logo_card/Bodyguard.png" alt="roles" />
             <DayRoomRoleAmount>X1</DayRoomRoleAmount>
           </DayRoomRoleWrapper>
-          {/* <DayRoomRoleWrapper>
-                        <DayRoomRoleImmg title="Phù thủy" src="/logo_card/Witch.png" alt="roles" />
-                        <DayRoomRoleAmount>X1</DayRoomRoleAmount>
-                    </DayRoomRoleWrapper> */}
+
           <DayRoomRoleWrapper>
             <DayRoomRoleImmg title="Dân làng" src="/logo_card/Villager.png" alt="roles" />
             <DayRoomRoleAmount>X{maxPlayer - 1 - maxWolf - 1}</DayRoomRoleAmount>
           </DayRoomRoleWrapper>
+
           <DayRoomRoleWrapper>
             <DayRoomRoleImmg title="Sói" src="/logo_card/wolf_normal.png" alt="roles" />
             <DayRoomRoleAmount>X{maxWolf}</DayRoomRoleAmount>
           </DayRoomRoleWrapper>
-          {/* <DayRoomRoleWrapper>
-                        <DayRoomRoleImmg title="Thợ săn" src="/logo_card/hunter.png" alt="roles" />
-                        <DayRoomRoleAmount>X1</DayRoomRoleAmount>
-                    </DayRoomRoleWrapper> */}
+
           <DayRoomRoleWrapper>
             <DayRoomRoleImmg title="Tiên tri" src="/logo_card/magic.png" alt="roles" />
             <DayRoomRoleAmount>X1</DayRoomRoleAmount>
@@ -87,8 +82,10 @@ const DayRoom = () => {
       <DayRoomContent>
         <DayRoomTurnImg />
       </DayRoomContent>
+
       <DayRoomFooter>
-        <CountDown />
+        <Role userInfo={userInfo} />
+
         <DayRoomTimmer>
           <SocialBtn
             icon={<AiOutlineClockCircle />}
@@ -101,16 +98,19 @@ const DayRoom = () => {
           />
           Time: 2:00
         </DayRoomTimmer>
-        {userInfo && userInfo.isPartyLeader ? (
-          <Button
-            bgColor={isStart ? "#13bafe" : "#ddd"}
-            text="Start"
-            textColor="#001b4d"
-            alt="btn"
-            disabled={!isStart}
-            onClick={startDayGame}
-          />
-        ) : null}
+
+        <div>
+          {userInfo && userInfo.isPartyLeader ? (
+            <Button
+              bgColor={isStart ? "#13bafe" : "#ddd"}
+              text="Start"
+              textColor="#001b4d"
+              alt="btn"
+              disabled={!isStart}
+              onClick={startDayGame}
+            />
+          ) : null}
+        </div>
       </DayRoomFooter>
     </DayRoomContainer>
   );
