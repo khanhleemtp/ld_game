@@ -21,8 +21,33 @@ import { useSocket } from "../../context/SocketProvider";
 import Role from "../Role";
 import CountDown from "../CountDown";
 
+const listSourceImage = {
+  seer: {
+    src: "/logo_card/magic.png"
+  },
+  wolf: {
+    src: "/logo_card/wolf_normal.png"
+  },
+  villager: {
+    src: "/logo_card/Villager.png"
+  },
+  guard: {
+    src: "/logo_card/Bodyguard.png"
+  }
+};
+
 const DayRoom = () => {
-  const { socket, gameState, setGameState, userInfo, isStart, startDayGame, leftRoom, timeRole } = useSocket();
+  const {
+    socket,
+    gameState,
+    setGameState,
+    userInfo,
+    isStart,
+    startDayGame,
+    leftRoom,
+    timeRole,
+    isHiddenStartButton
+  } = useSocket();
   const { players, maxPlayer, maxWolf } = gameState;
   const history = useHistory();
   const nickName = TokenService.getToken("ldname");
@@ -77,11 +102,15 @@ const DayRoom = () => {
             <DayRoomRoleAmount>X1</DayRoomRoleAmount>
           </DayRoomRoleWrapper>
         </DayRoomRoles>
-        <DayRoomDay>Ngày 2</DayRoomDay>
+        <DayRoomDay>{timeRole?.role ? `Lượt của ${timeRole.role}` : "Cả nhà cùng vui"}</DayRoomDay>
       </DayRoomTitle>
 
       <DayRoomContent>
-        <DayRoomTurnImg />
+        {timeRole?.role ? (
+          <DayRoomTurnImg src={listSourceImage[timeRole.role].src} alt="bg" />
+        ) : (
+          <DayRoomTurnImg src="/logo_card/witch.png" alt="bg" />
+        )}
       </DayRoomContent>
 
       <DayRoomFooter>
@@ -101,7 +130,7 @@ const DayRoom = () => {
         </DayRoomTimmer>
 
         <div>
-          {userInfo && userInfo.isPartyLeader ? (
+          {userInfo && userInfo.isPartyLeader && !isHiddenStartButton ? (
             <Button
               bgColor={isStart ? "#13bafe" : "#ddd"}
               text="Start"

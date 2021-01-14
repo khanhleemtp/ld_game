@@ -14,6 +14,9 @@ export function SocketProvider({ children }) {
   const [socket, setSocket] = useState();
   const [isStart, setIsStart] = useState(false);
   const [timeRole, setTimeRole] = useState({ role: "", time: 0 });
+  const [isHiddenStartButton, setIsHiddenStartButton] = useState(false);
+  const [isHiddenVoteButton, setIsHiddenVoteButton] = useState(true);
+
   const nickName = TokenService.getToken("ldname");
   const userInfo = gameState && gameState.players.filter(player => player.nickName === nickName)[0];
 
@@ -47,10 +50,12 @@ export function SocketProvider({ children }) {
   const startDayGame = () => {
     // distribution random card
     // socket.emit('timer', {playerID : userInfo._id, gameID: gameState._id });
+    setIsHiddenStartButton(true);
     socket.emit("start-game", { gameID: gameState._id });
   };
 
   const voteHandler = votedUser => {
+    setIsHiddenVoteButton(true);
     console.log(`${userInfo.nickName} voted ${votedUser.nickName}`);
     if (userInfo.role == "seer") {
       alert(`Chức năng của ${votedUser.nickName} là ${votedUser.role}`);
@@ -86,6 +91,7 @@ export function SocketProvider({ children }) {
     });
 
     newSocket.on("play-with-role", payload => {
+      setIsHiddenVoteButton(false);
       console.log("Play session: ", payload);
       setTimeRole(time => ({ ...time, ...payload }));
     });
@@ -111,7 +117,9 @@ export function SocketProvider({ children }) {
     joinRoom,
     leftRoom,
     timeRole,
-    voteHandler
+    voteHandler,
+    isHiddenVoteButton,
+    isHiddenStartButton
   };
 
   return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>;

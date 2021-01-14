@@ -59,7 +59,7 @@ export const DayRoomTurnImg = styled.div`
   margin: 32px 0;
   width: 100%;
   height: 240px;
-  background-image: url("/logo_card/hunter.png");
+  background-image: ${props => `url(${props.src})`};
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;

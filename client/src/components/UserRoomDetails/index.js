@@ -13,7 +13,7 @@ import {
 import { AiFillDingtalkCircle } from "react-icons/ai";
 
 export const UserRoomDetails = () => {
-  const { gameState, userInfo, timeRole, voteHandler } = useSocket();
+  const { gameState, userInfo, timeRole, voteHandler, isHiddenVoteButton } = useSocket();
   const { players } = gameState;
 
   return (
@@ -31,7 +31,7 @@ export const UserRoomDetails = () => {
                     {player.nickName}
                     {player.isPartyLeader ? <AiFillDingtalkCircle /> : ""}
                   </UserInfoName>
-                  {timeRole.role && userInfo.role && timeRole.role === userInfo.role ? (
+                  {timeRole.role && userInfo.role && timeRole.role === userInfo.role && !isHiddenVoteButton ? (
                     <button onClick={() => voteHandler(player)}>Vote</button>
                   ) : null}
                   <UserInfoVote>10 votes</UserInfoVote>
