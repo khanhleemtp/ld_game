@@ -87,10 +87,12 @@ const startGameForRoom = async (sockets, game) => {
     let timeObject = listTimerByRole[listRole[index]];
     console.log("Send to ", listRole[index], timeObject);
     if (listRole[index] == "villager") {
-      await actionBeforeVillagerTurn(sockets, game);
+      game = await actionBeforeVillagerTurn(sockets, game);
+      if (checkConditionEndGame(sockets, game)) break;
     }
     if (listRole[index] == "wolf") {
-      await actionBeforeWolfTurn(sockets, game);
+      game = await actionBeforeWolfTurn(sockets, game);
+      if (checkConditionEndGame(sockets, game)) break;
     }
     for (let i = 0; i < game.players.length; i++) {
       const player = game.players[i];
@@ -105,6 +107,9 @@ const startGameForRoom = async (sockets, game) => {
     index++;
     index = index % listRole.length;
   }
+
+  console.log("ENDGAME: -------------------------------------------");
+  console.log(game);
 };
 
 const waittingByPromise = timeout => {
@@ -146,6 +151,7 @@ const actionBeforeVillagerTurn = async (sockets, game) => {
     sockets[p.nickName].emit("updateGame", game);
   }
   await waittingByPromise(2);
+  return game;
 };
 
 const actionBeforeWolfTurn = async (sockets, game) => {
@@ -175,6 +181,39 @@ const actionBeforeWolfTurn = async (sockets, game) => {
     sockets[p.nickName].emit("updateGame", game);
   }
   await waittingByPromise(2);
+  return game;
+};
+
+const checkConditionEndGame = (sockets, game) => {
+  let totalWolf = 0;
+  let totalVillager = 0;
+  // wolf = 0 => nguoi thang
+  // nguoi = soi => soi thang
+
+  game.players.forEach(player => {
+    if (player.role == "wolf" && !player.isDie) totalWolf++;
+    if (player.role != "wolf" && !player.isDie) totalVillager++;
+  });
+
+  console.log("check: ", game, totalVillager, totalWolf);
+
+  if (totalWolf == 0) {
+    for (let i = 0; i < game.players.length; i++) {
+      const p = game.players[i];
+      sockets[p.nickName].emit("villager-win");
+    }
+    return true;
+  }
+
+  if (totalWolf == totalVillager) {
+    for (let i = 0; i < game.players.length; i++) {
+      const p = game.players[i];
+      sockets[p.nickName].emit("wolf-win");
+    }
+    return true;
+  }
+
+  return false;
 };
 
 module.exports = startGameService;

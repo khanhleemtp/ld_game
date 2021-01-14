@@ -101,6 +101,14 @@ export function SocketProvider({ children }) {
       console.log("Have player die: ", payload);
     });
 
+    newSocket.on("villager-win", payload => {
+      alert("Dân làng đã thắng");
+    });
+
+    newSocket.on("wolf-win", payload => {
+      alert("Sói đã thắng");
+    });
+
     // unmount
     return () => {
       newSocket.close();
