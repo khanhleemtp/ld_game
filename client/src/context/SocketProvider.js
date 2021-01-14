@@ -52,6 +52,9 @@ export function SocketProvider({ children }) {
 
   const voteHandler = votedUser => {
     console.log(`${userInfo.nickName} voted ${votedUser.nickName}`);
+    if (userInfo.role == "seer") {
+      alert(`Chức năng của ${votedUser.nickName} là ${votedUser.role}`);
+    } else socket.emit("vote-user", { gameID: gameState._id, userVoted: userInfo, beVoted: votedUser });
   };
 
   if (isFirstShowInfo && userInfo && gameState) {
@@ -71,6 +74,7 @@ export function SocketProvider({ children }) {
     setSocket(newSocket);
 
     newSocket.on("updateGame", game => {
+      console.log(game);
       setGameState(prev => ({ ...prev, ...game }));
       setIsStart(game.players.length === game.maxPlayer);
       // hàm này chỉ chạy 1 lần trc khi render ra view, khi nhận đc sk updateGame thì nó mới bắt đầu setGameState
@@ -84,6 +88,10 @@ export function SocketProvider({ children }) {
     newSocket.on("play-with-role", payload => {
       console.log("Play session: ", payload);
       setTimeRole(time => ({ ...time, ...payload }));
+    });
+
+    newSocket.on("play-die", payload => {
+      console.log("Have player die: ", payload);
     });
 
     // unmount

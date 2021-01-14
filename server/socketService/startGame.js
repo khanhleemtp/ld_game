@@ -86,6 +86,36 @@ const startGameForRoom = async (sockets, game) => {
   while (true) {
     let timeObject = listTimerByRole[listRole[index]];
     console.log("Send to ", listRole[index], timeObject);
+    if (listRole[index] == "villager") {
+      game = await Game.findById(game._id);
+      let clonePlayers = game.players.map(player => {
+        return {
+          nickName: player.nickName,
+          beVoted: player.beVoted
+        };
+      });
+      console.log(clonePlayers);
+
+      clonePlayers.forEach(player => {
+        let isGuardVoted = false;
+        let isWolfVoted = false;
+        if (player.beVoted.includes("wolf")) isWolfVoted = true;
+        if (player.beVoted.includes("guard")) isGuardVoted = true;
+
+        if (isWolfVoted && !isGuardVoted) {
+          for (let i = 0; i < game.players.length; i++) {
+            const p = game.players[i];
+            sockets[p.nickName].emit("play-die", player);
+          }
+        }
+      });
+
+      game.players.forEach(player => {
+        player.beVoted = [];
+      });
+      game = await game.save();
+      await waittingByPromise(2);
+    }
     for (let i = 0; i < game.players.length; i++) {
       const player = game.players[i];
       let payload = {

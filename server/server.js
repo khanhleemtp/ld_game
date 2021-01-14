@@ -11,6 +11,7 @@ const joinGameService = require("./socketService/joinGame");
 const leftGameService = require("./socketService/leftGame");
 const timerService = require("./socketService/timer");
 const startGameService = require("./socketService/startGame");
+const voteUserService = require("./socketService/voteUser");
 
 // initialize server
 require("dotenv").config();
@@ -68,6 +69,10 @@ io.on("connect", socket => {
 
   socket.on("start-game", async ({ gameID }) => {
     startGameService(io, socket, gameID, sockets);
+  });
+
+  socket.on("vote-user", async ({ gameID, userVoted, beVoted }) => {
+    voteUserService(io, socket, sockets, gameID, userVoted, beVoted);
   });
 });
 
