@@ -14,7 +14,6 @@ const StyleRole = styled.div`
       &__init {
         width: 100%;
         height: 100%;
-        /* filter: grayscale(100%); */
       }
     }
 

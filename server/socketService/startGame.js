@@ -87,34 +87,10 @@ const startGameForRoom = async (sockets, game) => {
     let timeObject = listTimerByRole[listRole[index]];
     console.log("Send to ", listRole[index], timeObject);
     if (listRole[index] == "villager") {
-      game = await Game.findById(game._id);
-      let clonePlayers = game.players.map(player => {
-        return {
-          nickName: player.nickName,
-          beVoted: player.beVoted
-        };
-      });
-      console.log(clonePlayers);
-
-      clonePlayers.forEach(player => {
-        let isGuardVoted = false;
-        let isWolfVoted = false;
-        if (player.beVoted.includes("wolf")) isWolfVoted = true;
-        if (player.beVoted.includes("guard")) isGuardVoted = true;
-
-        if (isWolfVoted && !isGuardVoted) {
-          for (let i = 0; i < game.players.length; i++) {
-            const p = game.players[i];
-            sockets[p.nickName].emit("play-die", player);
-          }
-        }
-      });
-
-      game.players.forEach(player => {
-        player.beVoted = [];
-      });
-      game = await game.save();
-      await waittingByPromise(2);
+      await actionBeforeVillagerTurn(sockets, game);
+    }
+    if (listRole[index] == "wolf") {
+      await actionBeforeWolfTurn(sockets, game);
     }
     for (let i = 0; i < game.players.length; i++) {
       const player = game.players[i];
@@ -136,6 +112,69 @@ const waittingByPromise = timeout => {
   return new Promise((resolve, reject) => {
     setTimeout(() => resolve(), timeout * 1000);
   });
+};
+
+const actionBeforeVillagerTurn = async (sockets, game) => {
+  game = await Game.findById(game._id);
+  let clonePlayers = game.players.map(player => {
+    return {
+      nickName: player.nickName,
+      beVoted: player.beVoted
+    };
+  });
+  console.log(clonePlayers);
+
+  clonePlayers.forEach(player => {
+    let isGuardVoted = false;
+    let isWolfVoted = false;
+    if (player.beVoted.includes("wolf")) isWolfVoted = true;
+    if (player.beVoted.includes("guard")) isGuardVoted = true;
+
+    if (isWolfVoted && !isGuardVoted) {
+      let findPlayerIngame = game.players.find(item => item.nickName == player.nickName);
+      findPlayerIngame.isDie = true;
+    }
+  });
+
+  game.players.forEach(player => {
+    player.beVoted = [];
+  });
+
+  game = await game.save();
+  for (let i = 0; i < game.players.length; i++) {
+    const p = game.players[i];
+    sockets[p.nickName].emit("updateGame", game);
+  }
+  await waittingByPromise(2);
+};
+
+const actionBeforeWolfTurn = async (sockets, game) => {
+  game = await Game.findById(game._id);
+
+  let playerMaxVote = null;
+  game.players.forEach(player => {
+    if (!playerMaxVote) playerMaxVote = player;
+
+    if (playerMaxVote.beVoted.length < player.beVoted.length) {
+      playerMaxVote = player;
+    }
+  });
+
+  if (playerMaxVote && playerMaxVote.beVoted.length) {
+    let findPlayerIngame = game.players.find(item => item.nickName == playerMaxVote.nickName);
+    findPlayerIngame.isDie = true;
+  }
+
+  game.players.forEach(player => {
+    player.beVoted = [];
+  });
+
+  game = await game.save();
+  for (let i = 0; i < game.players.length; i++) {
+    const p = game.players[i];
+    sockets[p.nickName].emit("updateGame", game);
+  }
+  await waittingByPromise(2);
 };
 
 module.exports = startGameService;

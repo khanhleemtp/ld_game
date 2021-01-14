@@ -40,11 +40,12 @@ export function SocketProvider({ children }) {
   const leftRoom = history => {
     socket.emit("left-game", nickName, gameState._id);
     console.log("state change");
-    setGameState(prev => {
-      return { ...prev, _id: "", players: gameState.players.filter(player => player.nickName !== nickName) };
-    });
+    // setGameState(prev => {
+    //   return { ...prev, _id: "", players: gameState.players.filter(player => player.nickName !== nickName) };
+    // });
     TokenService.removeToken("room_name");
-    history.push("/");
+    history.push("/rooms");
+    window.location.reload();
   };
 
   const startDayGame = () => {

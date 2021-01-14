@@ -65,6 +65,7 @@ export const UserAvatarContent = styled.div`
   background-size: 100%;
   left: 50%;
   transform: translateX(-50%);
+  filter: ${({ isDie }) => (isDie ? `grayscale(100%)` : ``)};
 `;
 
 export const UserInfoWrapper = styled.div`

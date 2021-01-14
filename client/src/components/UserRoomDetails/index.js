@@ -24,14 +24,17 @@ export const UserRoomDetails = () => {
             players.map(player => (
               <UserDetail key={player._id} user={userInfo && userInfo._id === player._id}>
                 <UserAvatarWrapper>
-                  <UserAvatarContent></UserAvatarContent>
+                  <UserAvatarContent isDie={player.isDie}></UserAvatarContent>
                 </UserAvatarWrapper>
                 <UserInfoWrapper>
                   <UserInfoName>
                     {player.nickName}
                     {player.isPartyLeader ? <AiFillDingtalkCircle /> : ""}
                   </UserInfoName>
-                  {timeRole.role && userInfo.role && timeRole.role === userInfo.role && !isHiddenVoteButton ? (
+                  {(timeRole?.role === userInfo?.role || timeRole?.role == "villager") &&
+                  !isHiddenVoteButton &&
+                  !userInfo?.isDie &&
+                  !player.isDie ? (
                     <button onClick={() => voteHandler(player)}>Vote</button>
                   ) : null}
                   <UserInfoVote>10 votes</UserInfoVote>
