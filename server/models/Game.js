@@ -4,7 +4,9 @@ const PlayerSchema = new mongoose.Schema({
   socketID: { type: String },
   isPartyLeader: { type: Boolean, default: false },
   nickName: { type: String },
-  role: { type: String, default: "" }
+  role: { type: String, default: "" },
+  isDie: { type: Boolean, default: false },
+  beVoted: { type: [String], default: [] }
 });
 
 const gameSchema = new mongoose.Schema({

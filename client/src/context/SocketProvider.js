@@ -50,6 +50,10 @@ export function SocketProvider({ children }) {
     socket.emit("start-game", { gameID: gameState._id });
   };
 
+  const voteHandler = votedUser => {
+    console.log(`${userInfo.nickName} voted ${votedUser.nickName}`);
+  };
+
   if (isFirstShowInfo && userInfo && gameState) {
     isFirstShowInfo = false;
     console.log("UserInfo: ", userInfo);
@@ -98,7 +102,8 @@ export function SocketProvider({ children }) {
     onCreateGame,
     joinRoom,
     leftRoom,
-    timeRole
+    timeRole,
+    voteHandler
   };
 
   return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>;

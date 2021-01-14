@@ -67,16 +67,16 @@ const generateRoleForSinglePlayer = (players, maxPlayer, listRole, role) => {
 const startGameForRoom = async (sockets, game) => {
   let listTimerByRole = {
     wolf: {
-      time: 3 // 3s
+      time: 5 // 5s
     },
     seer: {
-      time: 3
+      time: 5
     },
     guard: {
-      time: 3
+      time: 5
     },
     villager: {
-      time: 5
+      time: 10
     }
   };
 

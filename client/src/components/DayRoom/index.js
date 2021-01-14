@@ -79,6 +79,7 @@ const DayRoom = () => {
         </DayRoomRoles>
         <DayRoomDay>Ngày 2</DayRoomDay>
       </DayRoomTitle>
+
       <DayRoomContent>
         <DayRoomTurnImg />
       </DayRoomContent>
