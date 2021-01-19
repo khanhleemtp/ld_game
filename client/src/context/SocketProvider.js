@@ -14,6 +14,7 @@ export function SocketProvider({ children }) {
   const [socket, setSocket] = useState();
   const [isStart, setIsStart] = useState(false);
   const [timeRole, setTimeRole] = useState({ role: "", time: 0 });
+  const [message, setMessage] = useState("");
   const [isHiddenStartButton, setIsHiddenStartButton] = useState(false);
   const [isHiddenVoteButton, setIsHiddenVoteButton] = useState(true);
 
@@ -63,6 +64,10 @@ export function SocketProvider({ children }) {
     } else socket.emit("vote-user", { gameID: gameState._id, userVoted: userInfo, beVoted: votedUser });
   };
 
+  const sendMessage = (message, userInfo, gameID) => {
+    socket.emit("message", { message, userInfo, gameID });
+  };
+
   if (isFirstShowInfo && userInfo && gameState) {
     isFirstShowInfo = false;
     console.log("UserInfo: ", userInfo);
@@ -109,6 +114,10 @@ export function SocketProvider({ children }) {
       alert("Sói đã thắng");
     });
 
+    newSocket.on("send-message", ({ message, userInfo, gameID }) => {
+      setMessage(message);
+    });
+
     // unmount
     return () => {
       newSocket.close();
@@ -128,7 +137,9 @@ export function SocketProvider({ children }) {
     timeRole,
     voteHandler,
     isHiddenVoteButton,
-    isHiddenStartButton
+    isHiddenStartButton,
+    sendMessage,
+    message
   };
 
   return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>;

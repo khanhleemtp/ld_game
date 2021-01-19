@@ -16,12 +16,22 @@ export const ChatRoomContainer = styled.div`
   margin-top: 8px;
 `;
 
-export const ChatRoomRoles = styled.div``;
+export const ChatRoomRoles = styled.div`
+  cursor: pointer;
+  font-weight: 600;
+  padding: 8px 16px;
+  margin: 0 12px;
+  background: #dfe;
+  width: 120px;
+  border-radius: 8px;
+  color: #fff;
+  background: ${({ wolf }) => (wolf ? "#fb006d" : `#524280`)};
+`;
 
 export const ChatRoomTextWrapper = styled.div`
   height: 100%;
-  overflow-y: scroll;
-  height: 120px;
+  overflow-y: auto;
+  height: 100px;
   padding: 8px;
 `;
 
@@ -43,7 +53,7 @@ export const ChatRoomFooter = styled.div`
 
 export const ChatRoomInput = styled.input`
   width: 100%;
-  height: 60px;
+  height: 40px;
   padding: 8px 12px;
   border-radius: 8px;
   outline: none;
