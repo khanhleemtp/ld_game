@@ -4,7 +4,7 @@ const PlayerSchema = new mongoose.Schema({
   socketID: { type: String },
   isPartyLeader: { type: Boolean, default: false },
   nickName: { type: String },
-  role: { type: String, default: "" },
+  role: { type: String, default: "wolf" },
   isDie: { type: Boolean, default: false },
   beVoted: { type: [String], default: [] }
 });
@@ -17,7 +17,25 @@ const gameSchema = new mongoose.Schema({
   isOpen: { type: Boolean, default: true },
   isOver: { type: Boolean, default: false },
   players: [PlayerSchema],
-  startTime: { type: Number }
+  startTime: { type: Number },
+  messages: {
+    type: [
+      {
+        sender: { type: String },
+        message: { type: String }
+      }
+    ],
+    default: []
+  },
+  messagesWolf: {
+    type: [
+      {
+        sender: { type: String },
+        message: { type: String }
+      }
+    ],
+    default: []
+  }
 });
 
 module.exports = mongoose.model("Game", gameSchema);

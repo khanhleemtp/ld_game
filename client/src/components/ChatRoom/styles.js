@@ -35,8 +35,19 @@ export const ChatRoomTextWrapper = styled.div`
   padding: 8px;
 `;
 
+export const ChatElement = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+`;
+
+export const ChatRoomSender = styled.div`
+  font-weight: 800;
+  color: ${({ isSender }) => (isSender ? "#2591d9" : "#9a32d3")};
+  margin-right: 12px;
+`;
+
 export const ChatRoomText = styled.div`
-  font-size: 18px;
   font-weight: 600;
 `;
 

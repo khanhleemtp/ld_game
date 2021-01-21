@@ -76,8 +76,8 @@ io.on("connect", socket => {
     voteUserService(io, socket, sockets, gameID, userVoted, beVoted);
   });
 
-  socket.on("message", async ({ message, userInfo, gameID }) => {
-    chatGameService(io, socket, sockets, gameID, userInfo, message);
+  socket.on("message", async ({ message, userInfo, gameID, wolfMessage }) => {
+    chatGameService(io, socket, sockets, gameID, userInfo, message, wolfMessage);
   });
 });
 

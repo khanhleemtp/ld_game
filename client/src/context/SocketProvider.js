@@ -10,13 +10,22 @@ export function useSocket() {
 }
 
 export function SocketProvider({ children }) {
-  const [gameState, setGameState] = useState({ _id: "", isOpen: false, players: [], maxPlayer: 4, maxWolf: 1 });
+  const [gameState, setGameState] = useState({
+    _id: "",
+    isOpen: false,
+    players: [],
+    maxPlayer: 4,
+    maxWolf: 1,
+    messages: []
+  });
   const [socket, setSocket] = useState();
   const [isStart, setIsStart] = useState(false);
   const [timeRole, setTimeRole] = useState({ role: "", time: 0 });
-  const [message, setMessage] = useState("");
   const [isHiddenStartButton, setIsHiddenStartButton] = useState(false);
   const [isHiddenVoteButton, setIsHiddenVoteButton] = useState(true);
+
+  const [messageInfo, setMessageInfo] = useState("");
+  const [messageWolfInfo, setMessageWolfInfo] = useState("");
 
   const nickName = TokenService.getToken("ldname");
   const userInfo = gameState && gameState.players.filter(player => player.nickName === nickName)[0];
@@ -64,8 +73,10 @@ export function SocketProvider({ children }) {
     } else socket.emit("vote-user", { gameID: gameState._id, userVoted: userInfo, beVoted: votedUser });
   };
 
-  const sendMessage = (message, userInfo, gameID) => {
-    socket.emit("message", { message, userInfo, gameID });
+  const sendMessage = (message, userInfo, gameID, wolfMessage) => {
+    socket.emit("message", { message, userInfo, gameID, wolfMessage });
+    setMessageInfo("");
+    setMessageWolfInfo("");
   };
 
   if (isFirstShowInfo && userInfo && gameState) {
@@ -114,9 +125,9 @@ export function SocketProvider({ children }) {
       alert("Sói đã thắng");
     });
 
-    newSocket.on("send-message", ({ message, userInfo, gameID }) => {
-      setMessage(message);
-    });
+    // newSocket.on("send-message", ({ messages, userInfo, gameID }) => {
+    //   setMessages(messages);
+    // });
 
     // unmount
     return () => {
@@ -139,7 +150,10 @@ export function SocketProvider({ children }) {
     isHiddenVoteButton,
     isHiddenStartButton,
     sendMessage,
-    message
+    messageInfo,
+    setMessageInfo,
+    messageWolfInfo,
+    setMessageWolfInfo
   };
 
   return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>;
